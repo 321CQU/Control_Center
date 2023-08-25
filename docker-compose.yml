@@ -1,0 +1,17 @@
+version: '3'
+services:
+  control-center:
+    container_name: 321cqu-control-center
+    build: .
+    ports:
+     - "8000:8000"
+    restart: always
+    volumes:
+      - /www/services/control_center/config:/etc/ControlCenter:ro
+    networks:
+      - persist
+
+networks:
+  persist:
+    external:
+      name: 321cqu

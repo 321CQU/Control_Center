@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Debug ControlCenter",
+            "program": "${workspaceFolder:ControlCenter}/.build/debug/ControlCenter",
+            "args": [],
+            "cwd": "${workspaceFolder:ControlCenter}",
+            "preLaunchTask": "swift: Build Debug ControlCenter"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Release ControlCenter",
+            "program": "${workspaceFolder:ControlCenter}/.build/release/ControlCenter",
+            "args": [],
+            "cwd": "${workspaceFolder:ControlCenter}",
+            "preLaunchTask": "swift: Build Release ControlCenter"
+        }
+    ]
+}
