@@ -3,8 +3,8 @@ services:
   control-center:
     container_name: 321cqu-control-center
     build: .
-    ports:
-     - "8000:8000"
+    expose:
+      - "53214"
     restart: always
     volumes:
       - /www/services/control_center/config:/etc/ControlCenter:ro
