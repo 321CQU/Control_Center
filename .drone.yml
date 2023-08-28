@@ -21,7 +21,7 @@ steps:
   commands:
     - git config --global http.proxy http://127.0.0.1:7890
     - git config --global https.proxy http://127.0.0.1:7890
-    - git https://github.com/ZhuLegend/321CQU_Control_Center.git
+    - git clone https://github.com/ZhuLegend/321CQU_Control_Center.git
     - cd ./321CQU_Control_Center/
     - git checkout main
 
