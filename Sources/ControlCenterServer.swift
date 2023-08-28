@@ -106,7 +106,8 @@ struct ControlCenter: AsyncParsableCommand {
             port: dbConfig.port,
             username: dbConfig.username,
             password: dbConfig.password,
-            database: dbConfig.database
+            database: dbConfig.database,
+            tlsConfiguration: nil
         )
         return EventLoopGroupConnectionPool(
             source: MySQLConnectionSource(configuration: configuration),
@@ -130,7 +131,9 @@ struct ControlCenter: AsyncParsableCommand {
         }
 
         let server = try await Server.insecure(group: group)
-            .withServiceProviders([ImportantInfoServiceProvider(urlPrefix: "picture.321cqu.com", getDatabase: {db.database(logger: Logger(label: "com.321cqu.control-center.database")).sql()})])
+            .withServiceProviders([
+                ImportantInfoServiceProvider(getDatabase: {db.database(logger: Logger(label: "com.321cqu.control-center.database")).sql()})
+            ])
             .bind(host: host, port: port)
             .get()
 
