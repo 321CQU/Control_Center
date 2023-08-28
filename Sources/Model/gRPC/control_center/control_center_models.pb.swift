@@ -34,16 +34,87 @@ public struct ControlCenter_HomepageResponse {
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
+  public enum ImgPos: SwiftProtobuf.Enum {
+    public typealias RawValue = Int
+    case local // = 0
+    case cos // = 1
+    case UNRECOGNIZED(Int)
+
+    public init() {
+      self = .local
+    }
+
+    public init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .local
+      case 1: self = .cos
+      default: self = .UNRECOGNIZED(rawValue)
+      }
+    }
+
+    public var rawValue: Int {
+      switch self {
+      case .local: return 0
+      case .cos: return 1
+      case .UNRECOGNIZED(let i): return i
+      }
+    }
+
+  }
+
+  public enum JumpType: SwiftProtobuf.Enum {
+    public typealias RawValue = Int
+
+    /// 不跳转
+    case none // = 0
+
+    /// 跳转markdown页面
+    case md // = 1
+
+    /// 跳转url
+    case url // = 2
+    case UNRECOGNIZED(Int)
+
+    public init() {
+      self = .none
+    }
+
+    public init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .none
+      case 1: self = .md
+      case 2: self = .url
+      default: self = .UNRECOGNIZED(rawValue)
+      }
+    }
+
+    public var rawValue: Int {
+      switch self {
+      case .none: return 0
+      case .md: return 1
+      case .url: return 2
+      case .UNRECOGNIZED(let i): return i
+      }
+    }
+
+  }
+
   public struct HomepageInfo {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
-    /// 封面图片地址
+    /// 封面图片标识符（无路径前缀），如：/img/xxx.jpg
     public var imgURL: String = String()
 
-    /// 点击后跳转类型，组织方式为"跳转目的:跳转参数",如，跳转markdown页面可以写为"md:https://www.xxxx.com"
-    public var jumpURL: String = String()
+    /// 封面图片位置
+    public var imgPos: ControlCenter_HomepageResponse.ImgPos = .local
+
+    /// 点击后跳转类型
+    public var jumpType: ControlCenter_HomepageResponse.JumpType = .none
+
+    /// 点击后跳转参数，根据不同跳转类型自行约定
+    public var jumpParam: String = String()
 
     public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -53,8 +124,31 @@ public struct ControlCenter_HomepageResponse {
   public init() {}
 }
 
+#if swift(>=4.2)
+
+extension ControlCenter_HomepageResponse.ImgPos: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static var allCases: [ControlCenter_HomepageResponse.ImgPos] = [
+    .local,
+    .cos,
+  ]
+}
+
+extension ControlCenter_HomepageResponse.JumpType: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static var allCases: [ControlCenter_HomepageResponse.JumpType] = [
+    .none,
+    .md,
+    .url,
+  ]
+}
+
+#endif  // swift(>=4.2)
+
 #if swift(>=5.5) && canImport(_Concurrency)
 extension ControlCenter_HomepageResponse: @unchecked Sendable {}
+extension ControlCenter_HomepageResponse.ImgPos: @unchecked Sendable {}
+extension ControlCenter_HomepageResponse.JumpType: @unchecked Sendable {}
 extension ControlCenter_HomepageResponse.HomepageInfo: @unchecked Sendable {}
 #endif  // swift(>=5.5) && canImport(_Concurrency)
 
@@ -100,11 +194,28 @@ extension ControlCenter_HomepageResponse: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
+extension ControlCenter_HomepageResponse.ImgPos: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "LOCAL"),
+    1: .same(proto: "COS"),
+  ]
+}
+
+extension ControlCenter_HomepageResponse.JumpType: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "NONE"),
+    1: .same(proto: "MD"),
+    2: .same(proto: "URL"),
+  ]
+}
+
 extension ControlCenter_HomepageResponse.HomepageInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = ControlCenter_HomepageResponse.protoMessageName + ".HomepageInfo"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "img_url"),
-    2: .standard(proto: "jump_url"),
+    2: .standard(proto: "img_pos"),
+    3: .standard(proto: "jump_type"),
+    4: .standard(proto: "jump_param"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -114,7 +225,9 @@ extension ControlCenter_HomepageResponse.HomepageInfo: SwiftProtobuf.Message, Sw
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.imgURL) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.jumpURL) }()
+      case 2: try { try decoder.decodeSingularEnumField(value: &self.imgPos) }()
+      case 3: try { try decoder.decodeSingularEnumField(value: &self.jumpType) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.jumpParam) }()
       default: break
       }
     }
@@ -124,15 +237,23 @@ extension ControlCenter_HomepageResponse.HomepageInfo: SwiftProtobuf.Message, Sw
     if !self.imgURL.isEmpty {
       try visitor.visitSingularStringField(value: self.imgURL, fieldNumber: 1)
     }
-    if !self.jumpURL.isEmpty {
-      try visitor.visitSingularStringField(value: self.jumpURL, fieldNumber: 2)
+    if self.imgPos != .local {
+      try visitor.visitSingularEnumField(value: self.imgPos, fieldNumber: 2)
+    }
+    if self.jumpType != .none {
+      try visitor.visitSingularEnumField(value: self.jumpType, fieldNumber: 3)
+    }
+    if !self.jumpParam.isEmpty {
+      try visitor.visitSingularStringField(value: self.jumpParam, fieldNumber: 4)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: ControlCenter_HomepageResponse.HomepageInfo, rhs: ControlCenter_HomepageResponse.HomepageInfo) -> Bool {
     if lhs.imgURL != rhs.imgURL {return false}
-    if lhs.jumpURL != rhs.jumpURL {return false}
+    if lhs.imgPos != rhs.imgPos {return false}
+    if lhs.jumpType != rhs.jumpType {return false}
+    if lhs.jumpParam != rhs.jumpParam {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

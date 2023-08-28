@@ -16,6 +16,11 @@ public protocol ControlCenter_ImportantInfoServiceClientProtocol: GRPCClient {
   var serviceName: String { get }
   var interceptors: ControlCenter_ImportantInfoServiceClientInterceptorFactoryProtocol? { get }
 
+  func forceRefreshHomepageInfoCache(
+    _ request: SwiftProtobuf.Google_Protobuf_Empty,
+    callOptions: CallOptions?
+  ) -> UnaryCall<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>
+
   func getHomepageInfos(
     _ request: SwiftProtobuf.Google_Protobuf_Empty,
     callOptions: CallOptions?
@@ -27,7 +32,25 @@ extension ControlCenter_ImportantInfoServiceClientProtocol {
     return "control_center.ImportantInfoService"
   }
 
-  /// Unary call to GetHomepageInfos
+  /// 强制刷新首页信息缓存
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to ForceRefreshHomepageInfoCache.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func forceRefreshHomepageInfoCache(
+    _ request: SwiftProtobuf.Google_Protobuf_Empty,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse> {
+    return self.makeUnaryCall(
+      path: ControlCenter_ImportantInfoServiceClientMetadata.Methods.forceRefreshHomepageInfoCache.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceRefreshHomepageInfoCacheInterceptors() ?? []
+    )
+  }
+
+  /// 获取首页信息
   ///
   /// - Parameters:
   ///   - request: Request to send to GetHomepageInfos.
@@ -108,6 +131,11 @@ public protocol ControlCenter_ImportantInfoServiceAsyncClientProtocol: GRPCClien
   static var serviceDescriptor: GRPCServiceDescriptor { get }
   var interceptors: ControlCenter_ImportantInfoServiceClientInterceptorFactoryProtocol? { get }
 
+  func makeForceRefreshHomepageInfoCacheCall(
+    _ request: SwiftProtobuf.Google_Protobuf_Empty,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>
+
   func makeGetHomepageInfosCall(
     _ request: SwiftProtobuf.Google_Protobuf_Empty,
     callOptions: CallOptions?
@@ -122,6 +150,18 @@ extension ControlCenter_ImportantInfoServiceAsyncClientProtocol {
 
   public var interceptors: ControlCenter_ImportantInfoServiceClientInterceptorFactoryProtocol? {
     return nil
+  }
+
+  public func makeForceRefreshHomepageInfoCacheCall(
+    _ request: SwiftProtobuf.Google_Protobuf_Empty,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse> {
+    return self.makeAsyncUnaryCall(
+      path: ControlCenter_ImportantInfoServiceClientMetadata.Methods.forceRefreshHomepageInfoCache.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceRefreshHomepageInfoCacheInterceptors() ?? []
+    )
   }
 
   public func makeGetHomepageInfosCall(
@@ -139,6 +179,18 @@ extension ControlCenter_ImportantInfoServiceAsyncClientProtocol {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension ControlCenter_ImportantInfoServiceAsyncClientProtocol {
+  public func forceRefreshHomepageInfoCache(
+    _ request: SwiftProtobuf.Google_Protobuf_Empty,
+    callOptions: CallOptions? = nil
+  ) async throws -> ControlCenter_HomepageResponse {
+    return try await self.performAsyncUnaryCall(
+      path: ControlCenter_ImportantInfoServiceClientMetadata.Methods.forceRefreshHomepageInfoCache.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceRefreshHomepageInfoCacheInterceptors() ?? []
+    )
+  }
+
   public func getHomepageInfos(
     _ request: SwiftProtobuf.Google_Protobuf_Empty,
     callOptions: CallOptions? = nil
@@ -171,6 +223,9 @@ public struct ControlCenter_ImportantInfoServiceAsyncClient: ControlCenter_Impor
 
 public protocol ControlCenter_ImportantInfoServiceClientInterceptorFactoryProtocol: Sendable {
 
+  /// - Returns: Interceptors to use when invoking 'forceRefreshHomepageInfoCache'.
+  func makeForceRefreshHomepageInfoCacheInterceptors() -> [ClientInterceptor<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>]
+
   /// - Returns: Interceptors to use when invoking 'getHomepageInfos'.
   func makeGetHomepageInfosInterceptors() -> [ClientInterceptor<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>]
 }
@@ -180,11 +235,18 @@ public enum ControlCenter_ImportantInfoServiceClientMetadata {
     name: "ImportantInfoService",
     fullName: "control_center.ImportantInfoService",
     methods: [
+      ControlCenter_ImportantInfoServiceClientMetadata.Methods.forceRefreshHomepageInfoCache,
       ControlCenter_ImportantInfoServiceClientMetadata.Methods.getHomepageInfos,
     ]
   )
 
   public enum Methods {
+    public static let forceRefreshHomepageInfoCache = GRPCMethodDescriptor(
+      name: "ForceRefreshHomepageInfoCache",
+      path: "/control_center.ImportantInfoService/ForceRefreshHomepageInfoCache",
+      type: GRPCCallType.unary
+    )
+
     public static let getHomepageInfos = GRPCMethodDescriptor(
       name: "GetHomepageInfos",
       path: "/control_center.ImportantInfoService/GetHomepageInfos",
@@ -197,6 +259,10 @@ public enum ControlCenter_ImportantInfoServiceClientMetadata {
 public protocol ControlCenter_ImportantInfoServiceProvider: CallHandlerProvider {
   var interceptors: ControlCenter_ImportantInfoServiceServerInterceptorFactoryProtocol? { get }
 
+  /// 强制刷新首页信息缓存
+  func forceRefreshHomepageInfoCache(request: SwiftProtobuf.Google_Protobuf_Empty, context: StatusOnlyCallContext) -> EventLoopFuture<ControlCenter_HomepageResponse>
+
+  /// 获取首页信息
   func getHomepageInfos(request: SwiftProtobuf.Google_Protobuf_Empty, context: StatusOnlyCallContext) -> EventLoopFuture<ControlCenter_HomepageResponse>
 }
 
@@ -212,6 +278,15 @@ extension ControlCenter_ImportantInfoServiceProvider {
     context: CallHandlerContext
   ) -> GRPCServerHandlerProtocol? {
     switch name {
+    case "ForceRefreshHomepageInfoCache":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<SwiftProtobuf.Google_Protobuf_Empty>(),
+        responseSerializer: ProtobufSerializer<ControlCenter_HomepageResponse>(),
+        interceptors: self.interceptors?.makeForceRefreshHomepageInfoCacheInterceptors() ?? [],
+        userFunction: self.forceRefreshHomepageInfoCache(request:context:)
+      )
+
     case "GetHomepageInfos":
       return UnaryServerHandler(
         context: context,
@@ -233,6 +308,13 @@ public protocol ControlCenter_ImportantInfoServiceAsyncProvider: CallHandlerProv
   static var serviceDescriptor: GRPCServiceDescriptor { get }
   var interceptors: ControlCenter_ImportantInfoServiceServerInterceptorFactoryProtocol? { get }
 
+  /// 强制刷新首页信息缓存
+  func forceRefreshHomepageInfoCache(
+    request: SwiftProtobuf.Google_Protobuf_Empty,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> ControlCenter_HomepageResponse
+
+  /// 获取首页信息
   func getHomepageInfos(
     request: SwiftProtobuf.Google_Protobuf_Empty,
     context: GRPCAsyncServerCallContext
@@ -258,6 +340,15 @@ extension ControlCenter_ImportantInfoServiceAsyncProvider {
     context: CallHandlerContext
   ) -> GRPCServerHandlerProtocol? {
     switch name {
+    case "ForceRefreshHomepageInfoCache":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<SwiftProtobuf.Google_Protobuf_Empty>(),
+        responseSerializer: ProtobufSerializer<ControlCenter_HomepageResponse>(),
+        interceptors: self.interceptors?.makeForceRefreshHomepageInfoCacheInterceptors() ?? [],
+        wrapping: { try await self.forceRefreshHomepageInfoCache(request: $0, context: $1) }
+      )
+
     case "GetHomepageInfos":
       return GRPCAsyncServerHandler(
         context: context,
@@ -275,6 +366,10 @@ extension ControlCenter_ImportantInfoServiceAsyncProvider {
 
 public protocol ControlCenter_ImportantInfoServiceServerInterceptorFactoryProtocol: Sendable {
 
+  /// - Returns: Interceptors to use when handling 'forceRefreshHomepageInfoCache'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeForceRefreshHomepageInfoCacheInterceptors() -> [ServerInterceptor<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>]
+
   /// - Returns: Interceptors to use when handling 'getHomepageInfos'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeGetHomepageInfosInterceptors() -> [ServerInterceptor<SwiftProtobuf.Google_Protobuf_Empty, ControlCenter_HomepageResponse>]
@@ -285,11 +380,18 @@ public enum ControlCenter_ImportantInfoServiceServerMetadata {
     name: "ImportantInfoService",
     fullName: "control_center.ImportantInfoService",
     methods: [
+      ControlCenter_ImportantInfoServiceServerMetadata.Methods.forceRefreshHomepageInfoCache,
       ControlCenter_ImportantInfoServiceServerMetadata.Methods.getHomepageInfos,
     ]
   )
 
   public enum Methods {
+    public static let forceRefreshHomepageInfoCache = GRPCMethodDescriptor(
+      name: "ForceRefreshHomepageInfoCache",
+      path: "/control_center.ImportantInfoService/ForceRefreshHomepageInfoCache",
+      type: GRPCCallType.unary
+    )
+
     public static let getHomepageInfos = GRPCMethodDescriptor(
       name: "GetHomepageInfos",
       path: "/control_center.ImportantInfoService/GetHomepageInfos",

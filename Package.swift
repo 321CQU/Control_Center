@@ -23,7 +23,7 @@ let package = Package(
                 .product(name: "Puppy", package: "Puppy"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "GRPC", package: "grpc-swift"),
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
             path: "Sources"
         ),
