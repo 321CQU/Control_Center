@@ -132,7 +132,7 @@ struct ControlCenter: AsyncParsableCommand {
 
         let server = try await Server.insecure(group: group)
             .withServiceProviders([
-                ImportantInfoServiceProvider(getDatabase: {db.database(logger: Logger(label: "com.321cqu.control-center.database")).sql()})
+                ImportantInfoServiceProvider(scheduledTasksEventLoop: group.next(), getDatabase: {db.database(logger: Logger(label: "com.321cqu.control-center.database")).sql()})
             ])
             .bind(host: host, port: port)
             .get()
