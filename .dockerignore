@@ -199,3 +199,11 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 config/
+
+# Docker ignore only
+docker-compose.yml
+Dockerfile
+.dockerignore
+.drone.yml
+READEME.md
+.gitignore
