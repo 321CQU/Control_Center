@@ -9,4 +9,4 @@ ENV TZ=Asia/Shanghai
 WORKDIR /root
 COPY --from=builder /src/release .
 EXPOSE 8000
-CMD ["./ControlCenter", "--debug", "--db-config", "/etc/ControlCenter/database.config", "--important-info-service-config", "/etc/ControlCenter/important_info_service.config"]
+CMD ["./ControlCenter", "-p", "53214", "--db-config", "/etc/ControlCenter/database.config", "--important-info-service-config", "/etc/ControlCenter/important_info_service.config"]
