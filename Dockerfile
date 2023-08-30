@@ -1,4 +1,5 @@
 FROM swift:latest as builder
+ENV HTTP_PROXY=http://172.20.0.1:7890 HTTPS_PROXY=http://172.20.0.1:7890 ALL_PROXY=socks5://172.20.0.1:7890
 WORKDIR /src
 COPY . .
 RUN --mount=type=cache,target=/src/.build \

@@ -21,15 +21,17 @@ steps:
   commands:
     - git config --global http.proxy http://127.0.0.1:7890
     - git config --global https.proxy http://127.0.0.1:7890
-    - git clone https://github.com/ZhuLegend/321CQU_Control_Center.git
-    - cd ./321CQU_Control_Center/
+    - git clone https://github.com/321CQU/Control_Center.git
+    - cd ./Control_Center/
     - git checkout main
 
 - name: 新建镜像
   commands:
-    - cd ./321CQU_Control_Center/
-    - docker-compose build
-    - docker-compose up -d
+    - source $${_321CQU_PUBLIC_REPOSITORY_PATH}/.env
+    - cd ./Control_Center/
+    - docker build -t $${CONTROL_CENTER_IMAGE} .
+    - cd $${_321CQU_PUBLIC_REPOSITORY_PATH}
+    - docker-compose up -d $${CONTROL_CENTER_SERVER_NAME}
     - docker image prune -f
   depends_on:
     - clone
@@ -61,6 +63,11 @@ steps:
       message_color: true
       message_pic: true
       sha_link: true
+
+trigger:
+  status:
+    - success
+    - failure
 
 depends_on:
   - 部署ControlCenter
