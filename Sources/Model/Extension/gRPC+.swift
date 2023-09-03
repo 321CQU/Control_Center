@@ -8,7 +8,7 @@
 import Foundation
 
 extension HomepageQueryResponse.SavePos {
-    func toGRPCPos() -> ControlCenter_HomepageResponse.ImgPos {
+    func toGRPCPos() -> ControlCenter_HomepageResponse.HomepageInfo.ImgPos {
         switch self {
         case .local:
             return .local
@@ -19,7 +19,7 @@ extension HomepageQueryResponse.SavePos {
 }
 
 extension HomepageQueryResponse.JumpType {
-    func toGRPCJumpType() -> ControlCenter_HomepageResponse.JumpType {
+    func toGRPCJumpType() -> ControlCenter_HomepageResponse.HomepageInfo.JumpType {
         switch self {
         case .none:
             return .none

@@ -111,6 +111,7 @@ struct ControlCenter: AsyncParsableCommand {
         )
         return EventLoopGroupConnectionPool(
             source: MySQLConnectionSource(configuration: configuration),
+            requestTimeout: .seconds(15),
             on: loopGroup
         )
     }
