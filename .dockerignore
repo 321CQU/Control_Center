@@ -207,3 +207,4 @@ Dockerfile
 .drone.yml
 READEME.md
 .gitignore
+.github
