@@ -65,6 +65,11 @@ steps:
       sha_link: true
 
 trigger:
+  branch:
+    - main
+  event:
+    - push
+    - merge
   status:
     - success
     - failure
