@@ -109,7 +109,6 @@ final class ImportantInfoServiceProvider: ControlCenter_ImportantInfoServiceAsyn
         
         var result = ControlCenter_HomepageResponse()
         result.homepages = homepageInfos
-        result.lastUpdateTime = homepageLastUpdateTime
         
         return result
     }
@@ -127,7 +126,6 @@ final class ImportantInfoServiceProvider: ControlCenter_ImportantInfoServiceAsyn
         
         var result = ControlCenter_HomepageResponse()
         result.homepages = homepageInfos
-        result.lastUpdateTime = homepageLastUpdateTime
         
         return result
     }
