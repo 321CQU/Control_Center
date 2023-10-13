@@ -12,7 +12,7 @@ struct HomepageQueryResponse: Codable {
         case local, cos
     }
     
-    enum JumpType: String {
+    enum JumpType: String, Codable {
         case none, md, url, wechatMiniProgram
     }
     
