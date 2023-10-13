@@ -78,10 +78,12 @@ final class ImportantInfoServiceProvider: ControlCenter_ImportantInfoServiceAsyn
         Logger.shared.trace("Homepage Response: \(homepageResponse)")
         
         var homepages = homepageResponse.filter{$0.forceShowPos == nil}
-        homepageResponse.filter{$0.forceShowPos != nil}.forEach {
+        homepageResponse.filter{$0.forceShowPos != nil}.sorted{
+            ($0.forceShowPos! >= 0 && $1.forceShowPos! >= 0) ? ($0.forceShowPos! < $1.forceShowPos!) : ($0.forceShowPos! > $1.forceShowPos!)
+        }.forEach {
             item in
             guard let forceShowPos = item.forceShowPos else {return}
-            homepages.insert(item, at: forceShowPos >= 0 ? min(forceShowPos, homepages.count) : max(0, homepages.count + forceShowPos))
+            homepages.insert(item, at: forceShowPos >= 0 ? min(forceShowPos, homepages.count) : max(0, homepages.count + forceShowPos + 1))
         }
         
         let homepageInfos = homepages.map({
