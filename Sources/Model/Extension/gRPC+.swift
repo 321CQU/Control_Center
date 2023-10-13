@@ -27,6 +27,8 @@ extension HomepageQueryResponse.JumpType {
             return .md
         case .url:
             return .url
+        case .wechatMiniProgram:
+            return .wechatMiniProgram
         }
     }
 }
