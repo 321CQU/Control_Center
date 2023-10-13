@@ -13,7 +13,7 @@ struct HomepageQueryResponse: Codable {
     }
     
     enum JumpType: String, Codable {
-        case none, md, url
+        case none, md, url, wechatMiniProgram
     }
     
     let saveUrl: String
