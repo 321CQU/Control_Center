@@ -8,23 +8,23 @@
 import Foundation
 
 struct HomepageQueryResponse: Codable {
-    enum SavePos: String, Codable {
-        case local, cos
+    enum HomepageType: String, Codable {
+        case normal, random
     }
     
     enum JumpType: String {
         case none, md, url, wechatMiniProgram
     }
     
-    let saveUrl: String
-    let savePos: SavePos
+    let homepageType: HomepageType
+    let homepageParam: String
     let jumpType: JumpType
     let jumpParam: String?
     let forceShowPos: Int?
     
     enum CodingKeys: String, CodingKey {
-        case saveUrl = "save_url"
-        case savePos = "save_pos"
+        case homepageType = "homepage_type"
+        case homepageParam = "homepage_param"
         case jumpType = "jump_type"
         case jumpParam = "jump_param"
         case forceShowPos = "force_show_pos"
@@ -43,7 +43,7 @@ extension HomepageQueryResponse.JumpType: Codable {
             self = .md
         case "url":
             self = .url
-        case "wechat_mini_program", "wechatMiniProgram":
+        case "wechatMiniProgram":
             self = .wechatMiniProgram
         default:
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid jump type: \(rawValue)")
@@ -63,5 +63,49 @@ extension HomepageQueryResponse.JumpType: Codable {
         case .wechatMiniProgram:
             try container.encode("wechat_mini_program")
         }
+    }
+}
+
+extension HomepageQueryResponse {
+    func toGRPC() -> ControlCenter_HomepageResponse.HomepageInfo? {
+        var temp = ControlCenter_HomepageResponse.HomepageInfo()
+        let decoder = JSONDecoder()
+        
+        switch homepageType {
+        case .normal:
+            guard let dictionary = try? decoder.decode([String: String].self, from: homepageParam.data(using: .utf8)!) else { return nil }
+            switch dictionary["pos"] {
+            case "cos":
+                temp.imgPos = .cos
+            case "local":
+                temp.imgPos = .local
+            default:
+                return nil
+            }
+            guard let url = dictionary["url"] else  { return nil }
+            temp.imgURL = url
+        case .random:
+            guard let dictionary = try? decoder.decode([[String: String]].self, from: homepageParam.data(using: .utf8)!) else { return nil }
+            guard let target = dictionary.randomElement() else { return nil }
+            switch target["pos"] {
+            case "cos":
+                temp.imgPos = .cos
+            case "local":
+                temp.imgPos = .local
+            default:
+                return nil
+            }
+            guard let url = target["url"] else  { return nil }
+            temp.imgURL = url
+        }
+        
+        
+        temp.jumpType = jumpType.toGRPCJumpType()
+        
+        if let jumpParam = jumpParam {
+            temp.jumpParam = jumpParam
+        }
+        
+        return temp
     }
 }

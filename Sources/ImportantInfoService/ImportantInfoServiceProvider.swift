@@ -70,7 +70,7 @@ final class ImportantInfoServiceProvider: ControlCenter_ImportantInfoServiceAsyn
         
         // TODO: Typesafe SQL Operation
         let homepageResponse = try await database.select()
-            .columns(["save_url", "save_pos", "jump_type", "jump_param", "force_show_pos"])
+            .columns(["homepage_type", "homepage_param", "jump_type", "jump_param", "force_show_pos"])
             .from("Homepage")
             .where("is_hidden", .equal, 0)
             .all(decoding: HomepageQueryResponse.self)
@@ -86,19 +86,7 @@ final class ImportantInfoServiceProvider: ControlCenter_ImportantInfoServiceAsyn
             homepages.insert(item, at: forceShowPos >= 0 ? min(forceShowPos, homepages.count) : max(0, homepages.count + forceShowPos + 1))
         }
         
-        let homepageInfos = homepages.map({
-            item in
-            var temp = ControlCenter_HomepageResponse.HomepageInfo()
-            temp.imgPos = item.savePos.toGRPCPos()
-            temp.imgURL = item.saveUrl
-            temp.jumpType = item.jumpType.toGRPCJumpType()
-            
-            if let jumpParam = item.jumpParam {
-                temp.jumpParam = jumpParam
-            }
-            
-            return temp
-        })
+        let homepageInfos = homepages.compactMap({item in item.toGRPC()})
         
         // 解码后时区为UTC，减去8小时以和实际时区时间匹配
         return (homepageInfos, UInt32(homepageLastUpdateTime!.timeIntervalSince1970) - 3600 * 8)
